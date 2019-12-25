@@ -11,14 +11,13 @@ namespace Snek
         SpriteBatch spriteBatch;
 
         // Content management
-        Texture2D bodyPart;
+        Texture2D bodyTexture;
 
         // Game state management
         Point gotoLocation;
-        Point curSnakePos;
         Point curMousePos;
 
-        int snakeBodySize;
+        SnakeBody[] bodyParts;
 
         public Core()
         {
@@ -37,10 +36,14 @@ namespace Snek
         protected override void Initialize()
         {
             Random rand = new Random();
-            curSnakePos = new Point(rand.Next(20, 780), rand.Next(20, 580));
-            gotoLocation = new Point(curSnakePos.X, curSnakePos.Y);
-            snakeBodySize = 20;
+            gotoLocation = new Point();
 
+            Vector2 test = new Vector2(200, 200);
+            test.Normalize();
+            Console.WriteLine("{0}", test);
+
+            // Create our snake
+            bodyParts = new SnakeBody[20];
 
             base.Initialize();
         }
@@ -49,7 +52,9 @@ namespace Snek
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            bodyPart = Content.Load<Texture2D>("textures/circle");
+            bodyTexture = Content.Load<Texture2D>("textures/circle");
+
+            bodyParts[0] = new SnakeBody(null, bodyTexture, 20);
         }
 
         protected override void UnloadContent()
@@ -75,42 +80,20 @@ namespace Snek
                 }
                 else
                 {
-                    gotoLocation = new Point(curSnakePos.X, curSnakePos.Y);
+                    gotoLocation = new Point(bodyParts[0].curPos.X, bodyParts[0].curPos.Y);
                 }
 
-                if(gotoLocation != curSnakePos) {
-                    // Calculate deltaX as the intended destination less the current snake position (taking into account the snake body size)
-                    float deltaX = (gotoLocation.X - (curSnakePos.X) - snakeBodySize / 2);
-                    // Slow the speed over distance, while keeping a smooth speed gradient
-                    deltaX /= 10f;
-                    // Calculate the same delta for Y
-                    float deltaY = (gotoLocation.Y - (curSnakePos.Y) - snakeBodySize / 2);
-                    deltaY /= 10f;
+                // Update the head position if we need to
+                if(gotoLocation != bodyParts[0].curPos) {
+                    bodyParts[0].updatePosition(gotoLocation);
+                }
 
-                    Console.WriteLine("Deltas - X: {0}, Y: {1}", deltaX, deltaY);
-
-                    // Handle near distance travel
-                    if (deltaX > 0 && deltaX < 1)
+                foreach (SnakeBody body in bodyParts)
+                {
+                    if (body != null)
                     {
-                        deltaX = 1;
+                        body.updatePosition();
                     }
-                    else if (deltaX < 0 && deltaX > -1)
-                    {
-                        deltaX = -1;
-                    }
-                    if (deltaY > 0 && deltaY < 1)
-                    {
-                        deltaY = 1;
-                    }
-                    else if (deltaY < 0 && deltaY > -1)
-                    {
-                        deltaY = -1;
-                    }
-
-                    int speedCap = 25;
-
-                    // Move the snake towards the cursor
-                    curSnakePos += new Point(MathHelper.Clamp((int)deltaX, -speedCap, speedCap), MathHelper.Clamp((int)deltaY, -speedCap, speedCap));
                 }
             }
 
@@ -122,7 +105,13 @@ namespace Snek
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(bodyPart, new Rectangle(curSnakePos.X, curSnakePos.Y, snakeBodySize, snakeBodySize), Color.Red);
+            foreach (SnakeBody body in bodyParts)
+            {
+                if (body != null)
+                {
+                    spriteBatch.Draw(body.bodyTexture, new Rectangle(body.curPos.X, body.curPos.Y, body.size, body.size), Color.Red);
+                }
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
