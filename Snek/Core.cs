@@ -78,32 +78,40 @@ namespace Snek
                     gotoLocation = new Point(curSnakePos.X, curSnakePos.Y);
                 }
 
-                // Calculate deltaX as the intended destination less the current snake position (taking into account the snake body size)
-                float deltaX = (gotoLocation.X - (curSnakePos.X)-snakeBodySize/2);
-                // Slow the speed over distance, while keeping a smooth speed gradient
-                deltaX /= 10f;
-                // Calculate the same delta for Y
-                float deltaY = (gotoLocation.Y - (curSnakePos.Y)-snakeBodySize/2);
-                deltaY /= 10f;
+                if(gotoLocation != curSnakePos) {
+                    // Calculate deltaX as the intended destination less the current snake position (taking into account the snake body size)
+                    float deltaX = (gotoLocation.X - (curSnakePos.X) - snakeBodySize / 2);
+                    // Slow the speed over distance, while keeping a smooth speed gradient
+                    deltaX /= 10f;
+                    // Calculate the same delta for Y
+                    float deltaY = (gotoLocation.Y - (curSnakePos.Y) - snakeBodySize / 2);
+                    deltaY /= 10f;
 
-                Console.WriteLine("Deltas - X: {0}, Y: {1}", deltaX, deltaY);
+                    Console.WriteLine("Deltas - X: {0}, Y: {1}", deltaX, deltaY);
 
-                // Handle near distance travel
-                if(deltaX > 0 && deltaX < 1) {
-                    deltaX = 1;
-                } else if (deltaX < 0 && deltaX > -1) {
-                    deltaX = -1;
+                    // Handle near distance travel
+                    if (deltaX > 0 && deltaX < 1)
+                    {
+                        deltaX = 1;
+                    }
+                    else if (deltaX < 0 && deltaX > -1)
+                    {
+                        deltaX = -1;
+                    }
+                    if (deltaY > 0 && deltaY < 1)
+                    {
+                        deltaY = 1;
+                    }
+                    else if (deltaY < 0 && deltaY > -1)
+                    {
+                        deltaY = -1;
+                    }
+
+                    int speedCap = 25;
+
+                    // Move the snake towards the cursor
+                    curSnakePos += new Point(MathHelper.Clamp((int)deltaX, -speedCap, speedCap), MathHelper.Clamp((int)deltaY, -speedCap, speedCap));
                 }
-                if(deltaY > 0 && deltaY< 1) {
-                    deltaY = 1;
-                } else if (deltaY < 0 && deltaY> -1) {
-                    deltaY = -1;
-                }
-
-                int speedCap = 25;
-
-                // Move the snake towards the cursor
-                curSnakePos += new Point(MathHelper.Clamp((int)deltaX, -speedCap, speedCap), MathHelper.Clamp((int)deltaY, -speedCap, speedCap));
             }
 
             base.Update(gameTime);
