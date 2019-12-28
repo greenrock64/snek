@@ -12,10 +12,14 @@ namespace Snek
 
         // Content management
         Texture2D bodyTexture;
+        Texture2D pillTexture;
 
         SnakeHead snake;
         KeyboardState lastKey;
         double moveTimer;
+        Point pillPosition;
+
+        Random rand;
 
 
         public Core()
@@ -37,7 +41,9 @@ namespace Snek
             lastKey = Keyboard.GetState();
 
             moveTimer = 0f;
-            
+            rand = new Random();
+
+            pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
             base.Initialize();
         }
 
@@ -46,6 +52,7 @@ namespace Snek
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bodyTexture = Content.Load<Texture2D>("textures/square");
+            pillTexture = Content.Load<Texture2D>("textures/circle");
             
             // Create our snake
             snake = new SnakeHead(bodyTexture);
@@ -88,11 +95,15 @@ namespace Snek
             }
 
             // Check if the snake needs to move
-            if (moveTimer >= 1f)
+            if (moveTimer >= 0.1f)
             {   
                 moveTimer = 0;
                 snake.updatePosition();
-                // TODO - Move snek
+                if (snake.curPos == pillPosition)
+                {
+                    snake.eatPill();
+                    pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
+                }
             }
 
             lastKey = Keyboard.GetState();
@@ -105,6 +116,8 @@ namespace Snek
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
+
+            spriteBatch.Draw(pillTexture, new Rectangle(pillPosition.X * 32, pillPosition.Y * 32, 32, 32), Color.Red);
             // Render the snake head
             spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X*32, snake.curPos.Y*32, 32, 32), Color.Green);
             // Recursively dig through and render the whole snake
