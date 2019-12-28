@@ -74,19 +74,31 @@ namespace Snek
             // Re-adjust the snakes heading
             if (Keyboard.GetState().IsKeyDown(Keys.Up) && lastKey.IsKeyUp(Keys.Up))
             {
-                snake.setDirection(SnakeDirections.Up);
+                if (!(snake.curPos + new Point(0, -1) == snake.lastPos))
+                {
+                    snake.setDirection(SnakeDirections.Up);
+                }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right) && lastKey.IsKeyUp(Keys.Right))
             {
-                snake.setDirection(SnakeDirections.Right);
+                if (!(snake.curPos + new Point(1, 0) == snake.lastPos))
+                {
+                    snake.setDirection(SnakeDirections.Right);
+                }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down) && lastKey.IsKeyUp(Keys.Down))
             {
-                snake.setDirection(SnakeDirections.Down);
+                if (!(snake.curPos + new Point(0, 1) == snake.lastPos))
+                {
+                    snake.setDirection(SnakeDirections.Down);
+                }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Left) && lastKey.IsKeyUp(Keys.Left))
             {
-                snake.setDirection(SnakeDirections.Left);
+                if (!(snake.curPos + new Point(-1, 0) == snake.lastPos))
+                {
+                    snake.setDirection(SnakeDirections.Left);
+                }
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
