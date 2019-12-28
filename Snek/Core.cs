@@ -13,11 +13,10 @@ namespace Snek
         // Content management
         Texture2D bodyTexture;
 
-        // Game state management
-        Point gotoLocation;
-        Point curMousePos;
+        SnakeHead snake;
+        KeyboardState lastKey;
+        double moveTimer;
 
-        SnakeBody[] bodyParts;
 
         public Core()
         {
@@ -25,7 +24,7 @@ namespace Snek
             Content.RootDirectory = "Content";
 
             // Add our window settings
-            Window.Title = "Snek v0.1";
+            Window.Title = "Snek v0.2";
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
 
@@ -35,12 +34,10 @@ namespace Snek
 
         protected override void Initialize()
         {
-            Random rand = new Random();
-            gotoLocation = new Point();
+            lastKey = Keyboard.GetState();
 
-            // Create our snake
-            bodyParts = new SnakeBody[20];
-
+            moveTimer = 0f;
+            
             base.Initialize();
         }
 
@@ -48,10 +45,10 @@ namespace Snek
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            bodyTexture = Content.Load<Texture2D>("textures/circle");
-
-            bodyParts[0] = new SnakeBody(null, bodyTexture, 20);
-            bodyParts[1] = new SnakeBody(bodyParts[0], bodyTexture, 20);
+            bodyTexture = Content.Load<Texture2D>("textures/square");
+            
+            // Create our snake
+            snake = new SnakeHead(bodyTexture);
         }
 
         protected override void UnloadContent()
@@ -64,35 +61,36 @@ namespace Snek
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Store the current cursor position for easy access
-            curMousePos = Mouse.GetState().Position;
+            // Increment the move timer
+            moveTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Guard condition for closing the window
-            if (Window != null)
+            // Re-adjust the snakes heading
+            if (Keyboard.GetState().IsKeyDown(Keys.Up) && lastKey.IsKeyUp(Keys.Up))
             {
-                // Check that the mouse is within the game window
-                if ((curMousePos.X > 0 && curMousePos.X <= Window.ClientBounds.Width) && (curMousePos.Y > 0 && curMousePos.Y <= Window.ClientBounds.Height))
-                {
-                    gotoLocation = new Point(curMousePos.X, curMousePos.Y);
-                }
-                else
-                {
-                    gotoLocation = new Point(bodyParts[0].curPos.X, bodyParts[0].curPos.Y);
-                }
-
-                // Update the head position if we need to
-                if(gotoLocation != bodyParts[0].curPos) {
-                    bodyParts[0].updatePosition(gotoLocation);
-                }
-
-                foreach (SnakeBody body in bodyParts)
-                {
-                    if (body != null)
-                    {
-                        body.updatePosition();
-                    }
-                }
+                snake.setDirection(SnakeDirections.Up);
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right) && lastKey.IsKeyUp(Keys.Right))
+            {
+                snake.setDirection(SnakeDirections.Right);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && lastKey.IsKeyUp(Keys.Down))
+            {
+                snake.setDirection(SnakeDirections.Down);
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left) && lastKey.IsKeyUp(Keys.Left))
+            {
+                snake.setDirection(SnakeDirections.Left);
+            }
+
+            // Check if the snake needs to move
+            if (moveTimer >= 1f)
+            {   
+                moveTimer = 0;
+                snake.updatePosition();
+                // TODO - Move snek
+            }
+
+            lastKey = Keyboard.GetState();
 
             base.Update(gameTime);
         }
@@ -102,13 +100,7 @@ namespace Snek
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            foreach (SnakeBody body in bodyParts)
-            {
-                if (body != null)
-                {
-                    spriteBatch.Draw(body.bodyTexture, new Rectangle(body.curPos.X, body.curPos.Y, body.size, body.size), Color.Red);
-                }
-            }
+            spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X*32, snake.curPos.Y*32, 32, 32), Color.Green);
             spriteBatch.End();
 
             base.Draw(gameTime);
