@@ -15,6 +15,7 @@ namespace Snek
             direction = SnakeDirections.Right;
         }
         new public void updatePosition() {
+            lastPos = curPos;
             switch (direction)
             {
                 case 1: // Up

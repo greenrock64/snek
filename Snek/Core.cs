@@ -82,6 +82,11 @@ namespace Snek
                 snake.setDirection(SnakeDirections.Left);
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
+            {
+                snake.eatPill();
+            }
+
             // Check if the snake needs to move
             if (moveTimer >= 1f)
             {   
@@ -100,7 +105,14 @@ namespace Snek
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
+            // Render the snake head
             spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X*32, snake.curPos.Y*32, 32, 32), Color.Green);
+            // Recursively dig through and render the whole snake
+            for (SnakeBody body = snake.childBody; body != null; body = body.childBody)
+            {
+                // Render the snake body
+                spriteBatch.Draw(body.bodyTexture, new Rectangle(body.curPos.X * 32, body.curPos.Y * 32, 32, 32), Color.Green);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -34,10 +34,26 @@ namespace Snek
             this.bodyTexture = bodyTexture;
         }
 
+        public void eatPill()
+        {
+            if (childBody != null)
+            {
+                childBody.eatPill();
+            }
+            else
+            {
+                childBody = new SnakeBody(this, this.bodyTexture);
+            }
+        }
+
         // Calculate a new position based on the parent SnakeBody position
         public void updatePosition() {
             lastPos = curPos;
             curPos = parentBody.lastPos;
+            if (childBody != null)
+            {
+                childBody.updatePosition();
+            }
         }
     }
 }
