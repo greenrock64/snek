@@ -19,16 +19,16 @@ namespace Snek
             switch (direction)
             {
                 case 1: // Up
-                    curPos += new Point(0, -1);
+                    curPos += SnakeDirections.UpDir;
                     break;
                 case 2: // Right
-                    curPos += new Point(1, 0);
+                    curPos += SnakeDirections.RightDir;
                     break;
                 case 3: // Down
-                    curPos += new Point(0, 1);
+                    curPos += SnakeDirections.DownDir;
                     break;
                 case 4: // Left
-                    curPos += new Point(-1, 0);
+                    curPos += SnakeDirections.LeftDir;
                     break;
             }
             if (childBody != null)
@@ -51,6 +51,33 @@ namespace Snek
 
         public void setDirection(int newDirection)
         {
+            switch (direction)
+            {
+                case 1: // Up
+                    if (curPos + SnakeDirections.UpDir == lastPos)
+                    {
+                        return;
+                    }
+                    break;
+                case 2: // Right
+                    if (curPos + SnakeDirections.RightDir == lastPos)
+                    {
+                        return;
+                    }
+                    break;
+                case 3: // Down
+                    if (curPos + SnakeDirections.DownDir == lastPos)
+                    {
+                        return;
+                    }
+                    break;
+                case 4: // Left
+                    if (curPos + SnakeDirections.LeftDir == lastPos)
+                    {
+                        return;
+                    }
+                    break;
+            }
             this.direction = newDirection;
         }
     }

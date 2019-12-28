@@ -11,6 +11,12 @@ namespace Snek
         public const int Right = 2;
         public const int Down = 3;
         public const int Left = 4;
+
+        // X/Y Coordinates for directions
+        public static Point UpDir = new Point(0, -1);
+        public static Point RightDir = new Point(1, 0);
+        public static Point DownDir = new Point(0, 1);
+        public static Point LeftDir = new Point(-1, 0);
     }
     
     class SnakeBody
