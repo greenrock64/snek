@@ -37,6 +37,18 @@ namespace Snek
             }
         }
 
+        public bool hasCollided()
+        {
+            if (childBody != null)
+            {
+                return childBody.hasCollided(curPos);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void setDirection(int newDirection)
         {
             this.direction = newDirection;

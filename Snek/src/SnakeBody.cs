@@ -55,5 +55,19 @@ namespace Snek
                 childBody.updatePosition();
             }
         }
+        public bool hasCollided(Point headPos)
+        {
+            if (headPos == curPos)
+            {
+                return true;
+            } 
+            else if (childBody != null) {
+                return childBody.hasCollided(headPos);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

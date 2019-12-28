@@ -99,6 +99,10 @@ namespace Snek
             {   
                 moveTimer = 0;
                 snake.updatePosition();
+                if (snake.hasCollided())
+                {
+                    Console.WriteLine("Snake has eaten itself");
+                }
                 if (snake.curPos == pillPosition)
                 {
                     snake.eatPill();
