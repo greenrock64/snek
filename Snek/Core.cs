@@ -38,10 +38,6 @@ namespace Snek
             Random rand = new Random();
             gotoLocation = new Point();
 
-            Vector2 test = new Vector2(200, 200);
-            test.Normalize();
-            Console.WriteLine("{0}", test);
-
             // Create our snake
             bodyParts = new SnakeBody[20];
 
@@ -55,6 +51,7 @@ namespace Snek
             bodyTexture = Content.Load<Texture2D>("textures/circle");
 
             bodyParts[0] = new SnakeBody(null, bodyTexture, 20);
+            bodyParts[1] = new SnakeBody(bodyParts[0], bodyTexture, 20);
         }
 
         protected override void UnloadContent()
