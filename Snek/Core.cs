@@ -14,10 +14,14 @@ namespace Snek
         Texture2D bodyTexture;
         Texture2D pillTexture;
 
+        // Game management
         SnakeHead snake;
         KeyboardState lastKey;
         double moveTimer;
         Point pillPosition;
+
+        // Game state
+        bool hasDied;
 
         Random rand;
 
@@ -42,7 +46,11 @@ namespace Snek
 
             moveTimer = 0f;
             rand = new Random();
+            
+            // Set-up the initial gamestate
+            hasDied = false;
 
+            // Set the initial pill location
             pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
             base.Initialize();
         }
@@ -68,56 +76,69 @@ namespace Snek
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Increment the move timer
-            moveTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            if (!hasDied)
+            {
+                // Increment the move timer
+                moveTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Re-adjust the snakes heading
-            if (Keyboard.GetState().IsKeyDown(Keys.Up) && lastKey.IsKeyUp(Keys.Up))
-            {
-                if (!(snake.curPos + new Point(0, -1) == snake.lastPos))
+                // Re-adjust the snakes heading
+                if (Keyboard.GetState().IsKeyDown(Keys.Up) && lastKey.IsKeyUp(Keys.Up))
                 {
-                    snake.SetDirection(SnakeDirections.Up);
+                    if (!(snake.curPos + new Point(0, -1) == snake.lastPos))
+                    {
+                        snake.SetDirection(SnakeDirections.Up);
+                    }
                 }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right) && lastKey.IsKeyUp(Keys.Right))
-            {
-                if (!(snake.curPos + new Point(1, 0) == snake.lastPos))
+                else if (Keyboard.GetState().IsKeyDown(Keys.Right) && lastKey.IsKeyUp(Keys.Right))
                 {
-                    snake.SetDirection(SnakeDirections.Right);
+                    if (!(snake.curPos + new Point(1, 0) == snake.lastPos))
+                    {
+                        snake.SetDirection(SnakeDirections.Right);
+                    }
                 }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down) && lastKey.IsKeyUp(Keys.Down))
-            {
-                if (!(snake.curPos + new Point(0, 1) == snake.lastPos))
+                else if (Keyboard.GetState().IsKeyDown(Keys.Down) && lastKey.IsKeyUp(Keys.Down))
                 {
-                    snake.SetDirection(SnakeDirections.Down);
+                    if (!(snake.curPos + new Point(0, 1) == snake.lastPos))
+                    {
+                        snake.SetDirection(SnakeDirections.Down);
+                    }
                 }
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left) && lastKey.IsKeyUp(Keys.Left))
-            {
-                if (!(snake.curPos + new Point(-1, 0) == snake.lastPos))
+                else if (Keyboard.GetState().IsKeyDown(Keys.Left) && lastKey.IsKeyUp(Keys.Left))
                 {
-                    snake.SetDirection(SnakeDirections.Left);
+                    if (!(snake.curPos + new Point(-1, 0) == snake.lastPos))
+                    {
+                        snake.SetDirection(SnakeDirections.Left);
+                    }
                 }
-            }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
-            {
-                snake.EatPill();
-            }
-
-            // Check if the snake needs to move
-            if (moveTimer >= 0.1f)
-            {   
-                moveTimer = 0;
-                snake.UpdatePosition();
-                if (snake.HasCollided())
-                {
-                    Console.WriteLine("Snake has eaten itself");
-                }
-                if (snake.curPos == pillPosition)
+                if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
                 {
                     snake.EatPill();
+                }
+
+                // Check if the snake needs to move
+                if (moveTimer >= 0.1f)
+                {
+                    moveTimer = 0;
+                    snake.UpdatePosition();
+                    if (snake.HasCollided())
+                    {
+                        hasDied = true;
+                        Console.WriteLine("Snake has eaten itself");
+                    }
+                    if (snake.curPos == pillPosition)
+                    {
+                        snake.EatPill();
+                        pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
+                    }
+                }
+            }
+            else
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
+                {
+                    hasDied = false;
+                    snake = new SnakeHead(bodyTexture);
                     pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
                 }
             }
@@ -134,13 +155,20 @@ namespace Snek
             spriteBatch.Begin();
 
             spriteBatch.Draw(pillTexture, new Rectangle(pillPosition.X * 32, pillPosition.Y * 32, 32, 32), Color.Red);
-            // Render the snake head
-            spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X*32, snake.curPos.Y*32, 32, 32), Color.Green);
             // Recursively dig through and render the whole snake
             for (SnakeBody body = snake.childBody; body != null; body = body.childBody)
             {
                 // Render the snake body
                 spriteBatch.Draw(body.bodyTexture, new Rectangle(body.curPos.X * 32, body.curPos.Y * 32, 32, 32), Color.Green);
+            }
+            // Render the snake head
+            if (hasDied)
+            {
+                spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X * 32, snake.curPos.Y * 32, 32, 32), Color.Orange);
+            }
+            else
+            {
+                spriteBatch.Draw(snake.bodyTexture, new Rectangle(snake.curPos.X * 32, snake.curPos.Y * 32, 32, 32), Color.Green);
             }
             spriteBatch.End();
 
