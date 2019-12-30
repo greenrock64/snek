@@ -22,7 +22,7 @@ namespace Snek
             Content.RootDirectory = "Content";
 
             // Add our window settings
-            Window.Title = "Snek v0.2";
+            Window.Title = "Snek v0.3";
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
 
@@ -69,6 +69,18 @@ namespace Snek
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
+
+            // Draw the bounds of the map
+            // TODO - Handle this better
+            // Left Wall
+            spriteBatch.Draw(bodyTexture, new Rectangle(0 * 32, 0, 32, 32 * 18), Color.Gray);
+            // Right Wall
+            spriteBatch.Draw(bodyTexture, new Rectangle(17 * 32, 0, 32, 32 * 18), Color.Gray);
+            // Top wall
+            spriteBatch.Draw(bodyTexture, new Rectangle(1 * 32, 0, 32 * 16, 32), Color.Gray);
+            // Bottom wall
+            spriteBatch.Draw(bodyTexture, new Rectangle(1 * 32, 32 * 17, 32 * 16, 32), Color.Gray);
+
 
             spriteBatch.Draw(pillTexture, new Rectangle(gameManager.pillPosition.X * 32, gameManager.pillPosition.Y * 32, 32, 32), Color.Red);
             // Recursively dig through and render the whole snake

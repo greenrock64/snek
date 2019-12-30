@@ -48,7 +48,7 @@ namespace Snek
             // Create our snake
             snake = new SnakeHead();
             // Set the initial pill location
-            pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
+            pillPosition = new Point(rand.Next(1, 16), rand.Next(1, 16));
 
             moveTimer = 0f;
         }
@@ -86,6 +86,11 @@ namespace Snek
             }
         }
 
+        public bool IsSnakeInBounds(SnakeHead snake)
+        {
+            return true;
+        }
+
         public void Update(GameTime gameTime)
         {
             // Increment the move timer
@@ -102,17 +107,34 @@ namespace Snek
                 // Check if the snake needs to move
                 if (moveTimer >= 0.1f)
                 {
-                    moveTimer = 0;
-                    snake.UpdatePosition();
-                    if (snake.HasCollided())
+                    // Calculate the position the snake will move to
+                    Point predictedPos = snake.ApplyDirection(snake.curPos);
+
+                    if ((predictedPos.X < 1 || predictedPos.X > 16) || (predictedPos.Y < 1 || predictedPos.Y > 16))
                     {
+                        // Snake has left the map
                         hasDied = true;
-                        Console.WriteLine("Snake has eaten itself");
+                        Console.WriteLine("Snake has hit the wall");
                     }
-                    if (snake.curPos == pillPosition)
+                    else
                     {
-                        snake.EatPill();
-                        pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
+                        // Reset our moveTimer
+                        moveTimer = 0;
+                        // Update the snakes position
+                        snake.UpdatePosition();
+
+                        // Check if the snake has collided with itself
+                        if (snake.HasCollided())
+                        {
+                            hasDied = true;
+                            Console.WriteLine("Snake has eaten itself");
+                        }
+                        // Check if the snake has eaten a pill and will grow
+                        if (snake.curPos == pillPosition)
+                        {
+                            snake.EatPill();
+                            pillPosition = new Point(rand.Next(1, 16), rand.Next(1, 16));
+                        }
                     }
                 }
             }
