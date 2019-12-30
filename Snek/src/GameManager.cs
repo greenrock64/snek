@@ -11,6 +11,7 @@ namespace Snek
         public SnakeHead snake;
         public Point pillPosition;
         double moveTimer;
+        double gameSpeed;
 
         // Game state
         public bool hasDied;
@@ -44,6 +45,7 @@ namespace Snek
 
         public void NewGame()
         {
+            gameSpeed = 0.1f;
             hasDied = false;
             // Create our snake
             snake = new SnakeHead();
@@ -104,8 +106,18 @@ namespace Snek
                     snake.EatPill();
                 }
 
+                if (Keyboard.GetState().IsKeyDown(Keys.OemPlus) && lastKey.IsKeyUp(Keys.OemPlus))
+                {
+                    gameSpeed -= 0.01f;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.OemMinus) && lastKey.IsKeyUp(Keys.OemMinus))
+                {
+                    gameSpeed += 0.01f;
+                }
+
                 // Check if the snake needs to move
-                if (moveTimer >= 0.1f)
+                if (moveTimer >= gameSpeed)
                 {
                     // Calculate the position the snake will move to
                     Point predictedPos = snake.ApplyDirection(snake.curPos);
