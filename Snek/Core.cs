@@ -23,8 +23,8 @@ namespace Snek
 
             // Add our window settings
             Window.Title = "Snek v0.3";
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = 32*18;
+            graphics.PreferredBackBufferHeight = 32*18;
 
             // Display the mouse cursor in-game
             this.IsMouseVisible = true;
