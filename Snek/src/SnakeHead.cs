@@ -8,9 +8,8 @@ namespace Snek
     {
         int direction;
 
-        public SnakeHead(Texture2D bodyTexture)
+        public SnakeHead()
         {
-            this.bodyTexture = bodyTexture;
             curPos = new Point(0,0);
             direction = SnakeDirections.Right;
         }

@@ -21,8 +21,6 @@ namespace Snek
     
     class SnakeBody
     {
-        // Texture
-        public Texture2D bodyTexture {get;set;}
         // Position
         public Point curPos;
         public Point lastPos;
@@ -32,12 +30,11 @@ namespace Snek
 
         public SnakeBody() {}
 
-        public SnakeBody(SnakeBody parentBody, Texture2D bodyTexture)
+        public SnakeBody(SnakeBody parentBody)
         {
             // Body part
             this.parentBody = parentBody;
             this.curPos = parentBody.curPos;
-            this.bodyTexture = bodyTexture;
         }
 
         public void EatPill()
@@ -48,7 +45,7 @@ namespace Snek
             }
             else
             {
-                childBody = new SnakeBody(this, this.bodyTexture);
+                childBody = new SnakeBody(this);
             }
         }
 
