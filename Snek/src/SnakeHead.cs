@@ -14,7 +14,7 @@ namespace Snek
             curPos = new Point(0,0);
             direction = SnakeDirections.Right;
         }
-        new public void updatePosition() {
+        new public void UpdatePosition() {
             lastPos = curPos;
             switch (direction)
             {
@@ -33,15 +33,15 @@ namespace Snek
             }
             if (childBody != null)
             {
-                childBody.updatePosition();
+                childBody.UpdatePosition();
             }
         }
 
-        public bool hasCollided()
+        public bool HasCollided()
         {
             if (childBody != null)
             {
-                return childBody.hasCollided(curPos);
+                return childBody.HasCollided(curPos);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace Snek
             }
         }
 
-        public void setDirection(int newDirection)
+        public void SetDirection(int newDirection)
         {
             switch (direction)
             {

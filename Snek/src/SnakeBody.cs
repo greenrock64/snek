@@ -40,11 +40,11 @@ namespace Snek
             this.bodyTexture = bodyTexture;
         }
 
-        public void eatPill()
+        public void EatPill()
         {
             if (childBody != null)
             {
-                childBody.eatPill();
+                childBody.EatPill();
             }
             else
             {
@@ -53,22 +53,22 @@ namespace Snek
         }
 
         // Calculate a new position based on the parent SnakeBody position
-        public void updatePosition() {
+        public void UpdatePosition() {
             lastPos = curPos;
             curPos = parentBody.lastPos;
             if (childBody != null)
             {
-                childBody.updatePosition();
+                childBody.UpdatePosition();
             }
         }
-        public bool hasCollided(Point headPos)
+        public bool HasCollided(Point headPos)
         {
             if (headPos == curPos)
             {
                 return true;
             } 
             else if (childBody != null) {
-                return childBody.hasCollided(headPos);
+                return childBody.HasCollided(headPos);
             }
             else
             {

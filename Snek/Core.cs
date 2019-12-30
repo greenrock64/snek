@@ -76,48 +76,48 @@ namespace Snek
             {
                 if (!(snake.curPos + new Point(0, -1) == snake.lastPos))
                 {
-                    snake.setDirection(SnakeDirections.Up);
+                    snake.SetDirection(SnakeDirections.Up);
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right) && lastKey.IsKeyUp(Keys.Right))
             {
                 if (!(snake.curPos + new Point(1, 0) == snake.lastPos))
                 {
-                    snake.setDirection(SnakeDirections.Right);
+                    snake.SetDirection(SnakeDirections.Right);
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down) && lastKey.IsKeyUp(Keys.Down))
             {
                 if (!(snake.curPos + new Point(0, 1) == snake.lastPos))
                 {
-                    snake.setDirection(SnakeDirections.Down);
+                    snake.SetDirection(SnakeDirections.Down);
                 }
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Left) && lastKey.IsKeyUp(Keys.Left))
             {
                 if (!(snake.curPos + new Point(-1, 0) == snake.lastPos))
                 {
-                    snake.setDirection(SnakeDirections.Left);
+                    snake.SetDirection(SnakeDirections.Left);
                 }
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && lastKey.IsKeyUp(Keys.Space))
             {
-                snake.eatPill();
+                snake.EatPill();
             }
 
             // Check if the snake needs to move
             if (moveTimer >= 0.1f)
             {   
                 moveTimer = 0;
-                snake.updatePosition();
-                if (snake.hasCollided())
+                snake.UpdatePosition();
+                if (snake.HasCollided())
                 {
                     Console.WriteLine("Snake has eaten itself");
                 }
                 if (snake.curPos == pillPosition)
                 {
-                    snake.eatPill();
+                    snake.EatPill();
                     pillPosition = new Point(rand.Next(0, 16), rand.Next(0, 16));
                 }
             }
